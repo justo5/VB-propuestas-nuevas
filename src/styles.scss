@@ -1,0 +1,47 @@
+:root {
+  --color-primary: #1f73c4;
+  --color-primary-hover: #165a9e;
+  --color-accent-green: #b0d926;
+  --color-accent-red: #e8352a;
+  --color-accent-orange: #fb8b0e;
+  --color-dark: #16181d;
+  --color-google-yellow: #fbbc04;
+  --color-dark-soft: #1f2229;
+  --color-dark-border: #2c3039;
+  --color-bg: #faf9f6;
+  --color-border: #e6e3dc;
+  --color-text: #16181d;
+  --color-text-muted: #454850;
+  --color-text-on-dark-muted: #b9bcc4;
+  --font-family-brand: 'Schibsted Grotesk', Helvetica, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-family-brand);
+  line-height: 1.5;
+}
+
+a {
+  color: var(--color-primary);
+
+  &:hover {
+    color: var(--color-primary-hover);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

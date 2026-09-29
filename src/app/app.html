@@ -1,0 +1,338 @@
+<div class="page">
+  <div class="stripe">
+    <span class="stripe__bar stripe__bar--blue"></span>
+    <span class="stripe__bar stripe__bar--green"></span>
+    <span class="stripe__bar stripe__bar--red"></span>
+    <span class="stripe__bar stripe__bar--orange"></span>
+  </div>
+
+  <header class="header" [class.header--scrolled]="scrolled()">
+    <div class="header__inner">
+      <div class="brand">
+        <img src="logo.webp" alt="Vamos Bien" class="brand__logo" />
+        Vamos Bien
+      </div>
+      <nav class="nav" id="primary-navigation" [class.nav--open]="mobileMenuOpen()">
+        <a href="#diagnostico" class="nav__link" (click)="closeMenu()">El diagnóstico</a>
+        <a href="#escalones" class="nav__link" (click)="closeMenu()">Planes</a>
+        <a href="#comparar" class="nav__link" (click)="closeMenu()">Comparar</a>
+        <a href="#reviews" class="nav__link" (click)="closeMenu()">Reseñas</a>
+        <a href="#escalones" class="btn btn--dark nav__cta" (click)="closeMenu()"
+          >Aplicar para empezar</a
+        >
+      </nav>
+      <button
+        type="button"
+        class="nav-toggle"
+        [class.nav-toggle--open]="mobileMenuOpen()"
+        (click)="toggleMenu()"
+        aria-controls="primary-navigation"
+        [attr.aria-expanded]="mobileMenuOpen()"
+        aria-label="Abrir menú de navegación"
+      >
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <span class="decor decor--peach hero__decor-1"></span>
+    <span class="decor decor--lime hero__decor-2"></span>
+    <div class="hero__inner">
+      <div class="hero__copy">
+        <span class="badge"><span class="badge__dot"></span>Video gratuito · 7 minutos</span>
+        <h1 class="hero__title">
+          Conseguí más clientes <span class="text-primary">sin invertir a ciegas</span> en
+          publicidad
+        </h1>
+        <p class="hero__subtitle">
+          Descubrí cómo pensamos la captación de clientes para tu negocio con Meta Ads +
+          WhatsApp. Después elegí cómo empezar.
+        </p>
+        <div class="google-badge google-badge--inline">
+          <span class="google-badge__score">{{ googleRating }}</span>
+          <span class="google-badge__stars" aria-hidden="true">★★★★★</span>
+          <span class="google-badge__label">{{ googleReviewCount }}+ reseñas en Google</span>
+        </div>
+        <div class="hero__actions">
+          <a href="#video" class="btn btn--accent">▶ Ver el video</a>
+          <a href="#escalones" class="btn btn--outline">Qué opción me conviene</a>
+        </div>
+      </div>
+      <div id="video" class="video-card">
+        <div class="video-card__shadow"></div>
+        <div class="video-card__frame">
+          <div class="video-card__pattern"></div>
+          <div class="video-card__play"><span class="video-card__play-icon"></span></div>
+          <div class="video-card__label">video embebido · 7 min</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="diagnostico" class="diagnosis">
+    <span class="decor decor--blue diagnosis__decor-1"></span>
+    <span class="decor decor--red diagnosis__decor-2"></span>
+    <div class="diagnosis__inner">
+      <div class="reveal">
+        <div class="eyebrow eyebrow--on-dark">El diagnóstico</div>
+        <h2 class="section-title section-title--on-dark">
+          El problema no siempre es la publicidad
+        </h2>
+        <p class="section-lead section-lead--on-dark">
+          No necesitás más mensajes: necesitás consultas de personas que realmente puedan y
+          quieran comprar. Casi siempre falla algo de esto:
+        </p>
+      </div>
+      <div class="problem-grid">
+        @for (problem of problems; track problem; let i = $index) {
+          <div
+            class="problem-card problem-card--{{ (i % 4) + 1 }} reveal"
+            [style.transition-delay.ms]="i * 80"
+          >
+            <div class="problem-card__number">{{ pad2(i + 1) }}</div>
+            <div class="problem-card__text">{{ problem }}</div>
+          </div>
+        }
+      </div>
+      <div class="callout reveal">
+        <div class="callout__bar"></div>
+        <p class="callout__text">
+          No gana quien consigue más mensajes. Gana quien consigue
+          <span class="text-accent-green">mejores oportunidades comerciales.</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="escalones" class="tiers">
+    <span class="decor decor--blue-soft tiers__decor-1"></span>
+    <span class="decor decor--peach tiers__decor-2"></span>
+    <div class="tiers__intro reveal">
+      <div class="eyebrow">Antes del Plan Ejecución</div>
+      <h2 class="section-title">Tres escalones para empezar bien</h2>
+      <p class="section-lead">
+        Entendé qué falla, armá un plan o dejá tu primera campaña activa. Vos elegís desde dónde
+        subir.
+      </p>
+    </div>
+    <div class="tier-grid">
+      @for (tier of tiers; track tier.name; let i = $index) {
+        <article
+          class="tier tier--{{ i + 1 }} reveal"
+          [class.tier--featured]="tier.featured"
+          [style.transition-delay.ms]="i * 100"
+        >
+          <div class="tier__stair-row">
+            <div class="tier__stair" [style.height.px]="44 + i * 32">{{ i + 1 }}</div>
+            @if (tier.featured) {
+              <div class="tier__badge">★ Opción más completa</div>
+            }
+          </div>
+          <div class="tier__card">
+            <h3 class="tier__name">{{ tier.name }}</h3>
+            <div class="tier__price">
+              <span class="tier__price-amount">{{ tier.price }}</span>
+              <span class="tier__price-note">pago único</span>
+            </div>
+            <p class="tier__lead">{{ tier.lead }}</p>
+            <ul class="tier__items">
+              @for (item of tier.items; track item) {
+                <li><span class="tier__check">✓</span><span>{{ item }}</span></li>
+              }
+            </ul>
+            <div class="tier__quote">{{ tier.quote }}</div>
+            <div class="tier__deliverable"><b>Entregable:</b> {{ tier.deliverable }}</div>
+            <a href="#cierre" class="tier__cta">{{ tier.cta }} →</a>
+          </div>
+        </article>
+      }
+    </div>
+    <p class="fine-print">
+      Puesta en Marcha no incluye seguimiento, optimización, nuevas campañas, cambios
+      posteriores, reportes ni gestión mensual.
+    </p>
+  </section>
+
+  <section id="comparar" class="compare">
+    <span class="decor decor--lime-soft compare__decor-1"></span>
+    <span class="decor decor--blue-soft compare__decor-2"></span>
+    <div class="compare__table reveal">
+      <div class="compare__row compare__row--head">
+        <div>Opción</div>
+        <div>Mejor para</div>
+        <div>Qué te llevás</div>
+        <div>Precio</div>
+      </div>
+      @for (row of compare; track row.option; let i = $index; let last = $last) {
+        <div class="compare__row compare__row--{{ i + 1 }}" [class.compare__row--last]="last">
+          <div class="compare__option"><span class="compare__dot"></span>{{ row.option }}</div>
+          <div>{{ row.bestFor }}</div>
+          <div>{{ row.takeaway }}</div>
+          <div class="compare__price">{{ row.price }}</div>
+        </div>
+      }
+    </div>
+    <p class="compare__note reveal">
+      Todas son un primer paso hacia una captación más ordenada. Si después querés que
+      gestionemos tus campañas cada mes, avanzás al <b>Plan Ejecución</b>.
+    </p>
+  </section>
+
+  <section id="reviews" class="reviews">
+    <div class="reviews__intro reveal">
+      <div class="eyebrow">Lo que dicen nuestros clientes</div>
+      <h2 class="section-title">Reseñas reales de Google</h2>
+      <div class="google-badge">
+        <span class="google-badge__score">{{ googleRating }}</span>
+        <span class="google-badge__stars" aria-hidden="true">★★★★★</span>
+        <span class="google-badge__label">{{ googleReviewCount }} opiniones en Google</span>
+      </div>
+    </div>
+    <div class="reviews__marquee">
+      <div class="reviews__track reviews__track--a">
+        @for (t of testimonialsRowA; track t.name) {
+          <article class="review-card">
+            <div class="review-card__head">
+              <div class="review-card__avatar">{{ t.initials }}</div>
+              <div>
+                <div class="review-card__name">{{ t.name }}</div>
+                <div class="review-card__stars" aria-hidden="true">★★★★★</div>
+              </div>
+            </div>
+            <p class="review-card__quote">"{{ t.quote }}"</p>
+            <div class="review-card__time">{{ t.time }}</div>
+          </article>
+        }
+        @for (t of testimonialsRowA; track t.name + '-dup') {
+          <article class="review-card" aria-hidden="true">
+            <div class="review-card__head">
+              <div class="review-card__avatar">{{ t.initials }}</div>
+              <div>
+                <div class="review-card__name">{{ t.name }}</div>
+                <div class="review-card__stars" aria-hidden="true">★★★★★</div>
+              </div>
+            </div>
+            <p class="review-card__quote">"{{ t.quote }}"</p>
+            <div class="review-card__time">{{ t.time }}</div>
+          </article>
+        }
+      </div>
+      <div class="reviews__track reviews__track--b">
+        @for (t of testimonialsRowB; track t.name) {
+          <article class="review-card">
+            <div class="review-card__head">
+              <div class="review-card__avatar">{{ t.initials }}</div>
+              <div>
+                <div class="review-card__name">{{ t.name }}</div>
+                <div class="review-card__stars" aria-hidden="true">★★★★★</div>
+              </div>
+            </div>
+            <p class="review-card__quote">"{{ t.quote }}"</p>
+            <div class="review-card__time">{{ t.time }}</div>
+          </article>
+        }
+        @for (t of testimonialsRowB; track t.name + '-dup') {
+          <article class="review-card" aria-hidden="true">
+            <div class="review-card__head">
+              <div class="review-card__avatar">{{ t.initials }}</div>
+              <div>
+                <div class="review-card__name">{{ t.name }}</div>
+                <div class="review-card__stars" aria-hidden="true">★★★★★</div>
+              </div>
+            </div>
+            <p class="review-card__quote">"{{ t.quote }}"</p>
+            <div class="review-card__time">{{ t.time }}</div>
+          </article>
+        }
+      </div>
+    </div>
+    <p class="reviews__note">+{{ googleReviewCount }} reseñas en Google · Casos nuevos cada semana</p>
+  </section>
+
+  <section class="fit">
+    <span class="decor decor--lime-soft fit__decor-1"></span>
+    <div class="fit-card fit-card--yes reveal">
+      <span class="decor decor--blue-mid fit-card__decor"></span>
+      <h3 class="fit-card__title">Es para vos si…</h3>
+      <ul class="fit-card__list">
+        @for (item of yes; track item) {
+          <li>
+            <span class="fit-card__icon fit-card__icon--yes">✓</span>
+            <span>{{ item }}</span>
+          </li>
+        }
+      </ul>
+    </div>
+    <div class="fit-card fit-card--no reveal" style="transition-delay: 100ms">
+      <span class="decor decor--red-soft fit-card__decor"></span>
+      <h3 class="fit-card__title">No es para vos si…</h3>
+      <ul class="fit-card__list">
+        @for (item of no; track item) {
+          <li>
+            <span class="fit-card__icon fit-card__icon--no">✕</span>
+            <span>{{ item }}</span>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section id="cierre" class="closing">
+    <span class="decor decor--blue closing__decor-1"></span>
+    <span class="decor decor--orange closing__decor-2"></span>
+    <div class="closing__inner reveal">
+      <img src="logo.webp" alt="" class="closing__logo" />
+      <h2 class="closing__title">
+        Primero te mostramos el camino. Después, lo implementamos por vos.
+      </h2>
+      <p class="closing__lead">
+        No se trata de hacer anuncios. Se trata de construir un sistema para conseguir más
+        clientes.
+      </p>
+      <a href="#escalones" class="btn btn--accent">Quiero aplicar →</a>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <div class="brand brand--footer">
+          <img src="logo.webp" alt="Vamos Bien" class="brand__logo" />
+          Vamos Bien
+        </div>
+        <p class="footer__tagline">
+          Ayudamos a negocios en Uruguay a conseguir más clientes con Meta Ads + WhatsApp, sin
+          invertir a ciegas en publicidad.
+        </p>
+        <div class="google-badge google-badge--footer">
+          <span class="google-badge__score">{{ googleRating }}</span>
+          <span class="google-badge__stars" aria-hidden="true">★★★★★</span>
+          <span class="google-badge__label">{{ googleReviewCount }}+ reseñas en Google</span>
+        </div>
+      </div>
+      <div class="footer__col">
+        <div class="footer__heading">Navegación</div>
+        <a href="#diagnostico">El diagnóstico</a>
+        <a href="#escalones">Planes</a>
+        <a href="#comparar">Comparar opciones</a>
+        <a href="#reviews">Reseñas</a>
+      </div>
+      <div class="footer__col">
+        <div class="footer__heading">Empezar</div>
+        <p class="footer__text">¿Listo para dejar de improvisar con anuncios?</p>
+        <a href="#escalones" class="btn btn--accent footer__cta">Quiero aplicar →</a>
+      </div>
+    </div>
+    <div class="footer__stripe">
+      <span class="footer__stripe-bar footer__stripe-bar--blue"></span>
+      <span class="footer__stripe-bar footer__stripe-bar--green"></span>
+      <span class="footer__stripe-bar footer__stripe-bar--red"></span>
+      <span class="footer__stripe-bar footer__stripe-bar--orange"></span>
+    </div>
+    <div class="footer__bottom">
+      <span>© {{ currentYear }} Vamos Bien. Todos los derechos reservados.</span>
+      <span>Hecho en Uruguay</span>
+    </div>
+  </footer>
+</div>
