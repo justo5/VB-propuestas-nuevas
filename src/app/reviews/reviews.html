@@ -1,0 +1,68 @@
+<section id="reviews" class="reviews">
+  <div class="reviews__intro reveal">
+    <div class="eyebrow">Lo que dicen nuestros clientes</div>
+    <h2 class="section-title">Reseñas reales de Google</h2>
+    <div class="reviews__badge-wrap">
+      <app-google-badge suffix="opiniones en Google" [showPlus]="false" />
+    </div>
+  </div>
+  <div class="reviews__marquee">
+    <div class="reviews__track reviews__track--a">
+      @for (t of testimonialsRowA; track t.name) {
+        <article class="review-card">
+          <div class="review-card__head">
+            <div class="review-card__avatar">{{ t.initials }}</div>
+            <div>
+              <div class="review-card__name">{{ t.name }}</div>
+              <div class="review-card__stars" aria-hidden="true">★★★★★</div>
+            </div>
+          </div>
+          <p class="review-card__quote">"{{ t.quote }}"</p>
+          <div class="review-card__time">{{ t.time }}</div>
+        </article>
+      }
+      @for (t of testimonialsRowA; track t.name + '-dup') {
+        <article class="review-card" aria-hidden="true">
+          <div class="review-card__head">
+            <div class="review-card__avatar">{{ t.initials }}</div>
+            <div>
+              <div class="review-card__name">{{ t.name }}</div>
+              <div class="review-card__stars" aria-hidden="true">★★★★★</div>
+            </div>
+          </div>
+          <p class="review-card__quote">"{{ t.quote }}"</p>
+          <div class="review-card__time">{{ t.time }}</div>
+        </article>
+      }
+    </div>
+    <div class="reviews__track reviews__track--b">
+      @for (t of testimonialsRowB; track t.name) {
+        <article class="review-card">
+          <div class="review-card__head">
+            <div class="review-card__avatar">{{ t.initials }}</div>
+            <div>
+              <div class="review-card__name">{{ t.name }}</div>
+              <div class="review-card__stars" aria-hidden="true">★★★★★</div>
+            </div>
+          </div>
+          <p class="review-card__quote">"{{ t.quote }}"</p>
+          <div class="review-card__time">{{ t.time }}</div>
+        </article>
+      }
+      @for (t of testimonialsRowB; track t.name + '-dup') {
+        <article class="review-card" aria-hidden="true">
+          <div class="review-card__head">
+            <div class="review-card__avatar">{{ t.initials }}</div>
+            <div>
+              <div class="review-card__name">{{ t.name }}</div>
+              <div class="review-card__stars" aria-hidden="true">★★★★★</div>
+            </div>
+          </div>
+          <p class="review-card__quote">"{{ t.quote }}"</p>
+          <div class="review-card__time">{{ t.time }}</div>
+        </article>
+      }
+    </div>
+  </div>
+  <p class="reviews__note">+{{ googleReviewCount }} reseñas en Google · Casos nuevos cada semana</p>
+</section>

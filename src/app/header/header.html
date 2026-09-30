@@ -1,0 +1,28 @@
+<header class="header" [class.header--scrolled]="scrolled()">
+  <div class="header__inner">
+    <div class="brand">
+      <img src="logo.webp" alt="Vamos Bien" class="brand__logo" />
+      Vamos Bien
+    </div>
+    <nav class="nav" id="primary-navigation" [class.nav--open]="mobileMenuOpen()">
+      <a href="#diagnostico" class="nav__link" (click)="closeMenu()">El diagnóstico</a>
+      <a href="#escalones" class="nav__link" (click)="closeMenu()">Planes</a>
+      <a href="#comparar" class="nav__link" (click)="closeMenu()">Comparar</a>
+      <a href="#reviews" class="nav__link" (click)="closeMenu()">Reseñas</a>
+      <a href="#formulario" class="btn btn--dark nav__cta" (click)="closeMenu()"
+        >Aplicar para empezar</a
+      >
+    </nav>
+    <button
+      type="button"
+      class="nav-toggle"
+      [class.nav-toggle--open]="mobileMenuOpen()"
+      (click)="toggleMenu()"
+      aria-controls="primary-navigation"
+      [attr.aria-expanded]="mobileMenuOpen()"
+      aria-label="Abrir menú de navegación"
+    >
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>

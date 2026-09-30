@@ -1,0 +1,55 @@
+:host {
+  display: block;
+}
+
+.closing {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-dark);
+  color: #fff;
+  padding: 120px 24px;
+  text-align: center;
+
+  &__decor-1 {
+    left: -120px;
+    top: -120px;
+    width: 320px;
+    height: 320px;
+    opacity: 0.9;
+  }
+  &__decor-2 {
+    right: -90px;
+    bottom: -110px;
+    width: 300px;
+    height: 300px;
+  }
+
+  &__inner {
+    position: relative;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+
+  &__logo {
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+    margin-bottom: 28px;
+  }
+
+  &__title {
+    font-size: clamp(36px, 5.4vw, 64px);
+    letter-spacing: -0.045em;
+    line-height: 1;
+    margin: 0 0 24px;
+    font-weight: 900;
+    text-wrap: balance;
+  }
+
+  &__lead {
+    font-size: 19px;
+    margin: 0 0 40px;
+    color: #c9ccd3;
+    text-wrap: pretty;
+  }
+}

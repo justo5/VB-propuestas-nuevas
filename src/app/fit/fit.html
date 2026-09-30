@@ -1,0 +1,27 @@
+<section class="fit">
+  <span class="decor decor--lime-soft fit__decor-1"></span>
+  <div class="fit-card fit-card--yes reveal">
+    <span class="decor decor--blue-mid fit-card__decor"></span>
+    <h3 class="fit-card__title">Es para vos si…</h3>
+    <ul class="fit-card__list">
+      @for (item of yes; track item) {
+        <li>
+          <span class="fit-card__icon fit-card__icon--yes">✓</span>
+          <span>{{ item }}</span>
+        </li>
+      }
+    </ul>
+  </div>
+  <div class="fit-card fit-card--no reveal" style="transition-delay: 100ms">
+    <span class="decor decor--red-soft fit-card__decor"></span>
+    <h3 class="fit-card__title">No es para vos si…</h3>
+    <ul class="fit-card__list">
+      @for (item of no; track item) {
+        <li>
+          <span class="fit-card__icon fit-card__icon--no">✕</span>
+          <span>{{ item }}</span>
+        </li>
+      }
+    </ul>
+  </div>
+</section>

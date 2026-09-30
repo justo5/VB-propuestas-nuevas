@@ -1,57 +1,38 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, inject, signal } from '@angular/core';
-import {
-  COMPARE,
-  GOOGLE_RATING,
-  GOOGLE_REVIEW_COUNT,
-  NO_LIST,
-  PROBLEMS,
-  TESTIMONIALS_ROW_A,
-  TESTIMONIALS_ROW_B,
-  TIERS,
-  YES_LIST,
-} from './landing-data';
+import { AfterViewInit, Component, ElementRef, OnDestroy, inject } from '@angular/core';
+
+import { ApplicationForm } from './application-form/application-form';
+import { Closing } from './closing/closing';
+import { Compare } from './compare/compare';
+import { Diagnosis } from './diagnosis/diagnosis';
+import { Fit } from './fit/fit';
+import { Footer } from './footer/footer';
+import { Header } from './header/header';
+import { Hero } from './hero/hero';
+import { Reviews } from './reviews/reviews';
+import { Stripe } from './stripe/stripe';
+import { Tiers } from './tiers/tiers';
 
 @Component({
   selector: 'app-root',
-  imports: [],
+  imports: [
+    Stripe,
+    Header,
+    Hero,
+    Diagnosis,
+    Tiers,
+    Compare,
+    Reviews,
+    Fit,
+    Closing,
+    ApplicationForm,
+    Footer,
+  ],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
 export class App implements AfterViewInit, OnDestroy {
   private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private revealObserver?: IntersectionObserver;
-
-  protected readonly problems = PROBLEMS;
-  protected readonly tiers = TIERS;
-  protected readonly compare = COMPARE;
-  protected readonly yes = YES_LIST;
-  protected readonly no = NO_LIST;
-
-  protected readonly googleRating = GOOGLE_RATING;
-  protected readonly googleReviewCount = GOOGLE_REVIEW_COUNT;
-  protected readonly testimonialsRowA = TESTIMONIALS_ROW_A;
-  protected readonly testimonialsRowB = TESTIMONIALS_ROW_B;
-
-  protected readonly currentYear = new Date().getFullYear();
-  protected readonly mobileMenuOpen = signal(false);
-  protected readonly scrolled = signal(false);
-
-  @HostListener('window:scroll')
-  protected onWindowScroll(): void {
-    this.scrolled.set(window.scrollY > 8);
-  }
-
-  protected toggleMenu(): void {
-    this.mobileMenuOpen.update((open) => !open);
-  }
-
-  protected closeMenu(): void {
-    this.mobileMenuOpen.set(false);
-  }
-
-  protected pad2(n: number): string {
-    return String(n).padStart(2, '0');
-  }
 
   ngAfterViewInit(): void {
     const revealEls = this.elementRef.nativeElement.querySelectorAll<HTMLElement>('.reveal');
