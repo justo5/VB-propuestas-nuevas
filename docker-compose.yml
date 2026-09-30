@@ -1,0 +1,13 @@
+services:
+  vb-landing:
+    build:
+      context: .
+    container_name: vb-landing
+    restart: unless-stopped
+    networks:
+      - npm_network
+
+networks:
+  npm_network:
+    external: true
+    name: mi-red-nginx
