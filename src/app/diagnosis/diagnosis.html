@@ -1,0 +1,34 @@
+<section id="diagnostico" class="diagnosis">
+  <span class="decor decor--blue diagnosis__decor-1"></span>
+  <span class="decor decor--red diagnosis__decor-2"></span>
+  <div class="diagnosis__inner">
+    <div class="reveal">
+      <div class="eyebrow eyebrow--on-dark">El diagnóstico</div>
+      <h2 class="section-title section-title--on-dark">
+        El problema no siempre es la publicidad
+      </h2>
+      <p class="section-lead section-lead--on-dark">
+        No necesitás más mensajes: necesitás consultas de personas que realmente puedan y
+        quieran comprar. Casi siempre falla algo de esto:
+      </p>
+    </div>
+    <div class="problem-grid">
+      @for (problem of problems; track problem; let i = $index) {
+        <div
+          class="problem-card problem-card--{{ (i % 4) + 1 }} reveal"
+          [style.transition-delay.ms]="i * 80"
+        >
+          <div class="problem-card__number">{{ pad2(i + 1) }}</div>
+          <div class="problem-card__text">{{ problem }}</div>
+        </div>
+      }
+    </div>
+    <div class="callout reveal">
+      <div class="callout__bar"></div>
+      <p class="callout__text">
+        No gana quien consigue más mensajes. Gana quien consigue
+        <span class="text-accent-green">mejores oportunidades comerciales.</span>
+      </p>
+    </div>
+  </div>
+</section>

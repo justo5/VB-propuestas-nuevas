@@ -1,0 +1,9 @@
+<div
+  class="google-badge"
+  [class.google-badge--inline]="inline()"
+  [class.google-badge--dark]="dark()"
+>
+  <span class="google-badge__score">{{ rating }}</span>
+  <span class="google-badge__stars" aria-hidden="true">★★★★★</span>
+  <span class="google-badge__label">{{ reviewCount }}{{ showPlus() ? '+' : '' }} {{ suffix() }}</span>
+</div>

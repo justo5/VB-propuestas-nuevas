@@ -1,0 +1,46 @@
+:host {
+  display: inline-flex;
+}
+
+.google-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border: 1px solid var(--color-border);
+  padding: 10px 18px;
+  border-radius: 999px;
+
+  &__score {
+    font-size: 20px;
+    font-weight: 900;
+  }
+
+  &__stars {
+    color: var(--color-google-yellow);
+    letter-spacing: 1px;
+  }
+
+  &__label {
+    color: var(--color-text-muted);
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  &--inline {
+    margin: 0 0 28px;
+  }
+
+  &--dark {
+    background: var(--color-dark-soft);
+    border-color: var(--color-dark-border);
+
+    .google-badge__score {
+      color: #fff;
+    }
+
+    .google-badge__label {
+      color: var(--color-text-on-dark-muted);
+    }
+  }
+}

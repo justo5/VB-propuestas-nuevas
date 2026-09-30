@@ -1,0 +1,126 @@
+:host {
+  display: block;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: rgba(250, 249, 246, 0.78);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid transparent;
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+
+  &--scrolled {
+    border-bottom-color: var(--color-border);
+    box-shadow: 0 12px 30px -24px rgba(22, 24, 29, 0.35);
+  }
+
+  &__inner {
+    position: relative;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 18px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+
+  &__link {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-text);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--color-primary);
+    }
+  }
+}
+
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  cursor: pointer;
+
+  span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--color-dark);
+    border-radius: 2px;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+  }
+
+  &--open span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+  &--open span:nth-child(2) {
+    opacity: 0;
+  }
+  &--open span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+}
+
+@media (max-width: 860px) {
+  .nav {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 16px;
+    right: 16px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    background: #fff;
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+    padding: 12px;
+    box-shadow: 0 20px 40px -20px rgba(22, 24, 29, 0.25);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+
+    &--open {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+    }
+
+    &__link {
+      padding: 12px 14px;
+      border-radius: 10px;
+
+      &:hover {
+        background: var(--color-bg);
+      }
+    }
+
+    &__cta {
+      margin: 6px 2px 2px;
+      justify-content: center;
+    }
+  }
+
+  .nav-toggle {
+    display: flex;
+  }
+}

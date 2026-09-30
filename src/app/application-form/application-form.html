@@ -1,0 +1,137 @@
+<span class="apply__decor" aria-hidden="true"></span>
+<div class="apply__inner reveal">
+  <div class="eyebrow">Aplicar ahora</div>
+  <h2 class="section-title">Contanos sobre tu negocio</h2>
+  <p class="section-lead">
+    Completá estos datos en menos de un minuto y te contactamos por WhatsApp.
+  </p>
+
+  <div class="apply__card">
+    @if (!submitted()) {
+      <div class="apply__progress">
+        <div class="apply__progress-bar" [style.width.%]="progress()"></div>
+      </div>
+      <div class="apply__step-count">Paso {{ currentStep() + 1 }} de {{ steps.length }}</div>
+
+      <form [formGroup]="form" (ngSubmit)="next()" class="apply__form" novalidate>
+        @switch (currentStep()) {
+          @case (0) {
+            <h3 class="apply__question">¿Qué plan te interesa?</h3>
+            <div class="apply__fields">
+              <label class="apply__field">
+                <span>Plan seleccionado</span>
+                <select formControlName="plan">
+                  <option value="" disabled>Elegí un plan</option>
+                  @for (option of planOptions; track option.value) {
+                    <option [value]="option.value">{{ option.label }}</option>
+                  }
+                </select>
+                @if (isInvalid('plan')) {
+                  <span class="apply__error">Elegí un plan</span>
+                }
+              </label>
+            </div>
+          }
+          @case (1) {
+            <h3 class="apply__question">¿Cómo te llamás?</h3>
+            <div class="apply__fields">
+              <label class="apply__field">
+                <span>Nombre</span>
+                <input type="text" formControlName="nombre" placeholder="Tu nombre" />
+                @if (isInvalid('nombre')) {
+                  <span class="apply__error">Ingresá tu nombre</span>
+                }
+              </label>
+              <label class="apply__field">
+                <span>Apellido</span>
+                <input type="text" formControlName="apellido" placeholder="Tu apellido" />
+                @if (isInvalid('apellido')) {
+                  <span class="apply__error">Ingresá tu apellido</span>
+                }
+              </label>
+            </div>
+          }
+          @case (2) {
+            <h3 class="apply__question">¿Dónde te encontramos?</h3>
+            <div class="apply__fields">
+              <label class="apply__field">
+                <span>Sitio web o Instagram</span>
+                <input
+                  type="text"
+                  formControlName="contacto"
+                  placeholder="@tunegocio o tusitio.com"
+                />
+                @if (isInvalid('contacto')) {
+                  <span class="apply__error">Contanos dónde encontrarte</span>
+                }
+              </label>
+              <label class="apply__field">
+                <span>WhatsApp</span>
+                <input type="tel" formControlName="whatsapp" placeholder="+598 99 999 999" />
+                @if (isInvalid('whatsapp')) {
+                  <span class="apply__error">Ingresá tu número de WhatsApp</span>
+                }
+              </label>
+            </div>
+          }
+          @case (3) {
+            <h3 class="apply__question">¿A qué se dedica tu negocio?</h3>
+            <div class="apply__fields">
+              <label class="apply__field">
+                <span>Rubro</span>
+                <input
+                  type="text"
+                  formControlName="rubro"
+                  placeholder="Ej: estética, gastronomía, inmobiliaria…"
+                />
+                @if (isInvalid('rubro')) {
+                  <span class="apply__error">Contanos tu rubro</span>
+                }
+              </label>
+            </div>
+          }
+          @case (4) {
+            <h3 class="apply__question">¿Cuánto estás invirtiendo hoy en anuncios?</h3>
+            <div class="apply__options">
+              @for (option of inversionOptions; track option.value) {
+                <label
+                  class="apply__option"
+                  [class.apply__option--selected]="form.value.inversion === option.value"
+                >
+                  <input type="radio" formControlName="inversion" [value]="option.value" />
+                  <span>{{ option.label }}</span>
+                </label>
+              }
+            </div>
+            @if (isInvalid('inversion')) {
+              <span class="apply__error">Elegí una opción</span>
+            }
+          }
+        }
+
+        <div class="apply__nav">
+          @if (currentStep() > 0) {
+            <button type="button" class="btn btn--outline" (click)="prev()">← Atrás</button>
+          } @else {
+            <span></span>
+          }
+          <button type="submit" class="btn btn--accent">
+            {{ currentStep() === steps.length - 1 ? 'Enviar' : 'Continuar →' }}
+          </button>
+        </div>
+      </form>
+    } @else {
+      <div class="apply__done">
+        <div class="apply__done-icon">✓</div>
+        <h3>¡Listo, {{ form.value.nombre }}!</h3>
+        <p>
+          Te abrimos WhatsApp para que nos mandes tu consulta. Si no se abrió automáticamente, tocá
+          el botón:
+        </p>
+        <a [href]="whatsappLink()" target="_blank" rel="noopener" class="btn btn--accent"
+          >Abrir WhatsApp →</a
+        >
+      </div>
+    }
+  </div>
+</div>

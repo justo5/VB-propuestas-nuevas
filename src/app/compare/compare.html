@@ -1,0 +1,24 @@
+<section id="comparar" class="compare">
+  <span class="decor decor--lime-soft compare__decor-1"></span>
+  <span class="decor decor--blue-soft compare__decor-2"></span>
+  <div class="compare__table reveal">
+    <div class="compare__row compare__row--head">
+      <div>Opción</div>
+      <div>Mejor para</div>
+      <div>Qué te llevás</div>
+      <div>Precio</div>
+    </div>
+    @for (row of compare; track row.option; let i = $index; let last = $last) {
+      <div class="compare__row compare__row--{{ i + 1 }}" [class.compare__row--last]="last">
+        <div class="compare__option"><span class="compare__dot"></span>{{ row.option }}</div>
+        <div>{{ row.bestFor }}</div>
+        <div>{{ row.takeaway }}</div>
+        <div class="compare__price">{{ row.price }}</div>
+      </div>
+    }
+  </div>
+  <p class="compare__note reveal">
+    Todas son un primer paso hacia una captación más ordenada. Si después querés que
+    gestionemos tus campañas cada mes, avanzás al <b>Plan Ejecución</b>.
+  </p>
+</section>

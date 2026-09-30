@@ -1,0 +1,50 @@
+<section id="escalones" class="tiers">
+  <span class="decor decor--blue-soft tiers__decor-1"></span>
+  <span class="decor decor--peach tiers__decor-2"></span>
+  <div class="tiers__intro reveal">
+    <div class="eyebrow">Antes del Plan Ejecución</div>
+    <h2 class="section-title">Tres escalones para empezar bien</h2>
+    <p class="section-lead">
+      Entendé qué falla, armá un plan o dejá tu primera campaña activa. Vos elegís desde dónde
+      subir.
+    </p>
+  </div>
+  <div class="tier-grid">
+    @for (tier of tiers; track tier.name; let i = $index) {
+      <article
+        class="tier tier--{{ i + 1 }} reveal"
+        [class.tier--featured]="tier.featured"
+        [style.transition-delay.ms]="i * 100"
+      >
+        <div class="tier__stair-row">
+          <div class="tier__stair" [style.height.px]="44 + i * 32">{{ i + 1 }}</div>
+          @if (tier.featured) {
+            <div class="tier__badge">★ Opción más completa</div>
+          }
+        </div>
+        <div class="tier__card">
+          <h3 class="tier__name">{{ tier.name }}</h3>
+          <div class="tier__price">
+            <span class="tier__price-amount">{{ tier.price }}</span>
+            <span class="tier__price-note">pago único</span>
+          </div>
+          <p class="tier__lead">{{ tier.lead }}</p>
+          <ul class="tier__items">
+            @for (item of tier.items; track item) {
+              <li><span class="tier__check">✓</span><span>{{ item }}</span></li>
+            }
+          </ul>
+          <div class="tier__quote">{{ tier.quote }}</div>
+          <div class="tier__deliverable"><b>Entregable:</b> {{ tier.deliverable }}</div>
+          <a href="#formulario" class="tier__cta" (click)="selectPlan(tier.name)"
+            >{{ tier.cta }} →</a
+          >
+        </div>
+      </article>
+    }
+  </div>
+  <p class="fine-print">
+    Puesta en Marcha no incluye seguimiento, optimización, nuevas campañas, cambios
+    posteriores, reportes ni gestión mensual.
+  </p>
+</section>
