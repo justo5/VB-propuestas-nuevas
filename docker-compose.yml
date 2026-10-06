@@ -24,6 +24,8 @@ services:
       TURNSTILE_SECRET_KEY: ${TURNSTILE_SECRET_KEY:-}
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
       TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID:-}
+      WEBHOOK_URL: ${WEBHOOK_URL:-}
+      WEBHOOK_SECRET: ${WEBHOOK_SECRET:-}
     depends_on:
       vb-db:
         condition: service_healthy
@@ -37,6 +39,7 @@ services:
     networks:
       - vb_app
       - vb_db
+      - integracion
 
   vb-db:
     image: postgres:17-alpine
@@ -65,6 +68,10 @@ networks:
   npm_network:
     external: true
     name: mi-red-nginx
+  # Red de Docker del otro sistema que recibe las aplicaciones por webhook.
+  integracion:
+    external: true
+    name: ${WEBHOOK_NETWORK:-mi-red-nginx}
   # Frontend <-> API. Tiene salida a internet para Turnstile y Telegram.
   vb_app:
   # API <-> base de datos. Sin salida a internet y sin puertos publicados.

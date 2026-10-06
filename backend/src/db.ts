@@ -25,6 +25,19 @@ export async function migrate(): Promise<void> {
       created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
     )
   `);
+
+  // Estado del envío al sistema externo (webhook).
+  await pool.query(`
+    ALTER TABLE aplicaciones
+      ADD COLUMN IF NOT EXISTS webhook_enviado_at TIMESTAMPTZ,
+      ADD COLUMN IF NOT EXISTS webhook_intentos   INT NOT NULL DEFAULT 0,
+      ADD COLUMN IF NOT EXISTS webhook_proximo_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+      ADD COLUMN IF NOT EXISTS webhook_error      TEXT
+  `);
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS aplicaciones_webhook_pendientes
+      ON aplicaciones (webhook_proximo_at) WHERE webhook_enviado_at IS NULL
+  `);
 }
 
 export async function insertAplicacion(

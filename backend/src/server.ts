@@ -4,6 +4,7 @@ import { config } from './config.ts';
 import { insertAplicacion, migrate, pool } from './db.ts';
 import { notifyTelegram, verifyTurnstile } from './integrations.ts';
 import { aplicacionSchema } from './schema.ts';
+import { kickWebhook, startWebhookWorker } from './webhook.ts';
 
 const app = Fastify({
   bodyLimit: 10 * 1024,
@@ -49,6 +50,8 @@ app.post('/api/aplicaciones', async (request, reply) => {
   });
   request.log.info({ id }, 'aplicación recibida');
 
+  kickWebhook();
+
   notifyTelegram(id, data).catch((error: Error) =>
     request.log.error({ id, err: error.message }, 'falló el aviso por Telegram'),
   );
@@ -74,3 +77,4 @@ process.on('SIGINT', shutdown);
 
 await migrate();
 await app.listen({ host: '0.0.0.0', port: config.port });
+startWebhookWorker(app.log);

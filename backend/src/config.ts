@@ -18,4 +18,11 @@ export const config = {
   turnstileSecretKey: optional('TURNSTILE_SECRET_KEY'),
   telegramBotToken: optional('TELEGRAM_BOT_TOKEN'),
   telegramChatId: optional('TELEGRAM_CHAT_ID'),
+  // Si no se define WEBHOOK_URL, no se envían las aplicaciones a otro sistema.
+  webhookUrl: optional('WEBHOOK_URL'),
+  webhookSecret: optional('WEBHOOK_SECRET'),
 };
+
+if (config.webhookUrl && (!config.webhookSecret || config.webhookSecret.length < 32)) {
+  throw new Error('WEBHOOK_SECRET es obligatorio (mínimo 32 caracteres) si se define WEBHOOK_URL');
+}

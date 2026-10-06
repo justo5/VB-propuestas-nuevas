@@ -43,6 +43,64 @@ docker compose exec -T vb-db pg_dump -U vb vb | gzip > backup-$(date +%F).sql.gz
   `TURNSTILE_SITE_KEY` y `TURNSTILE_SECRET_KEY`. Si están vacías, no se exige.
 - **Aviso por Telegram**: completá `TELEGRAM_BOT_TOKEN` y `TELEGRAM_CHAT_ID`.
 
+## Envío a otro sistema (webhook)
+
+Con `WEBHOOK_URL` y `WEBHOOK_SECRET` en el `.env`, cada aplicación se guarda en Postgres y
+después se envía por `POST` a esa URL. Si el otro sistema corre en Docker en el mismo servidor,
+poné en `WEBHOOK_NETWORK` el nombre de su red (`docker network ls`) y usá como URL el nombre de
+su contenedor, por ejemplo `http://mi-sistema:8080/webhooks/vb`.
+
+Cuerpo del envío:
+
+```json
+{
+  "evento": "aplicacion.creada",
+  "id": 42,
+  "createdAt": "2026-10-06T18:49:07.982Z",
+  "plan": "Plan de Captación 30 días",
+  "nombre": "Ana",
+  "apellido": "Pérez",
+  "contacto": "@ana",
+  "whatsapp": "+598 99 123 456",
+  "rubro": "estética",
+  "inversion": "300-700",
+  "consentimientoAt": "2026-10-06T18:49:07.982Z"
+}
+```
+
+`inversion` es uno de `menos-300`, `300-700`, `700-1500` o `mas-1500`.
+
+Headers:
+
+- `x-vb-event-id`: el id de la aplicación. Puede llegar más de una vez, así que el receptor tiene
+  que ignorar los ids que ya procesó.
+- `x-vb-timestamp`: segundos Unix del envío.
+- `x-vb-signature`: `sha256=` + HMAC-SHA256 en hex de `` `${timestamp}.${body}` `` con `WEBHOOK_SECRET`.
+
+El receptor debe verificar la firma sobre el body **crudo** (sin re-serializar el JSON), rechazar
+timestamps de más de 5 minutos y responder 2xx. Cualquier otra respuesta, o no responder en 10 s,
+cuenta como fallo y se reintenta con espera creciente (1, 2, 4… minutos, hasta 6 h entre intentos;
+máximo 20 intentos). Ejemplo en Node:
+
+```js
+import { createHmac, timingSafeEqual } from 'node:crypto';
+
+function firmaValida(rawBody, headers, secret) {
+  const ts = headers['x-vb-timestamp'];
+  if (Math.abs(Date.now() / 1000 - Number(ts)) > 300) return false;
+  const esperada = 'sha256=' + createHmac('sha256', secret).update(`${ts}.${rawBody}`).digest('hex');
+  const recibida = headers['x-vb-signature'] ?? '';
+  return esperada.length === recibida.length && timingSafeEqual(Buffer.from(esperada), Buffer.from(recibida));
+}
+```
+
+Ver envíos pendientes o fallidos:
+
+```bash
+docker compose exec vb-db psql -U vb -d vb \
+  -c "SELECT id, webhook_intentos, webhook_proximo_at, webhook_error FROM aplicaciones WHERE webhook_enviado_at IS NULL"
+```
+
 ## Seguridad del formulario
 
 - Validación en el servidor (zod): campos obligatorios, largos máximos, valores permitidos.
