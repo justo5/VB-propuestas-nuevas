@@ -46,7 +46,12 @@
                   "maximumError": "24kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "optimization": {
+                "scripts": true,
+                "fonts": true,
+                "styles": { "minify": true, "inlineCritical": false }
+              }
             },
             "development": {
               "optimization": false,
@@ -58,6 +63,9 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "proxyConfig": "proxy.conf.json"
+          },
           "configurations": {
             "production": {
               "buildTarget": "vb-landing:build:production"

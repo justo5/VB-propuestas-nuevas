@@ -1,60 +1,69 @@
-# VbLanding
-
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.0.
-
-## Development server
-
-To start a local development server, run:
-
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
 # VB-propuestas-nuevas
+
+Landing de Vamos Bien con formulario de aplicación.
+
+```
+frontend/   Angular + nginx (sirve la landing y hace proxy de /api al backend)
+backend/    API en Node (Fastify) que valida y guarda las aplicaciones
+            en Postgres; opcionalmente avisa por Telegram
+```
+
+## Producción (Docker)
+
+1. Copiá `.env.example` a `.env` y completá `POSTGRES_PASSWORD` (`openssl rand -hex 24`).
+2. `docker compose up -d --build`
+3. En Nginx Proxy Manager apuntá el dominio a `vb-landing:80` con SSL forzado y HSTS.
+
+Solo `vb-landing` está en la red de Nginx Proxy Manager. La API y la base de datos no publican
+puertos, y la base está en una red interna sin salida a internet.
+
+### Ver las aplicaciones recibidas
+
+```bash
+docker compose exec vb-db psql -U vb -d vb \
+  -c "SELECT id, created_at, plan, nombre, apellido, whatsapp, contacto, rubro, inversion FROM aplicaciones ORDER BY id DESC"
+```
+
+Exportar a CSV:
+
+```bash
+docker compose exec -T vb-db psql -U vb -d vb \
+  -c "\copy (SELECT * FROM aplicaciones ORDER BY id) TO STDOUT WITH CSV HEADER" > aplicaciones.csv
+```
+
+### Backup
+
+```bash
+docker compose exec -T vb-db pg_dump -U vb vb | gzip > backup-$(date +%F).sql.gz
+```
+
+### Opcionales
+
+- **Cloudflare Turnstile** (anti-spam): creá un widget en el panel de Cloudflare y completá
+  `TURNSTILE_SITE_KEY` y `TURNSTILE_SECRET_KEY`. Si están vacías, no se exige.
+- **Aviso por Telegram**: completá `TELEGRAM_BOT_TOKEN` y `TELEGRAM_CHAT_ID`.
+
+## Seguridad del formulario
+
+- Validación en el servidor (zod): campos obligatorios, largos máximos, valores permitidos.
+- Consultas SQL parametrizadas.
+- Límite de 5 envíos por minuto por IP (nginx) y body máximo de 10 KB.
+- Honeypot y Turnstile opcional contra bots.
+- Consentimiento explícito, guardado con fecha.
+- Los secretos solo viven en el `.env` del servidor; nunca en el código de Angular.
+- Headers de seguridad (CSP, nosniff, frame-ancestors, etc.) en nginx.
+- Los logs no incluyen datos personales.
+
+## Desarrollo local
+
+```bash
+# Postgres de desarrollo
+docker run -d --name vb-db-dev -e POSTGRES_PASSWORD=dev -p 5432:5432 postgres:17-alpine
+
+# Backend (http://localhost:3000)
+cd backend && yarn install
+DATABASE_URL=postgres://postgres:dev@localhost:5432/postgres yarn dev
+
+# Frontend (http://localhost:4200, /api se redirige al backend)
+cd frontend && yarn install && yarn start
+```

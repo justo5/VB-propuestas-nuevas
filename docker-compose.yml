@@ -1,13 +1,72 @@
 services:
   vb-landing:
     build:
-      context: .
+      context: ./frontend
     container_name: vb-landing
     restart: unless-stopped
+    depends_on:
+      vb-api:
+        condition: service_healthy
+    security_opt:
+      - no-new-privileges:true
     networks:
       - npm_network
+      - vb_app
+
+  vb-api:
+    build:
+      context: ./backend
+    container_name: vb-api
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@vb-db:5432/${POSTGRES_DB}
+      TURNSTILE_SITE_KEY: ${TURNSTILE_SITE_KEY:-}
+      TURNSTILE_SECRET_KEY: ${TURNSTILE_SECRET_KEY:-}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID:-}
+    depends_on:
+      vb-db:
+        condition: service_healthy
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - vb_app
+      - vb_db
+
+  vb-db:
+    image: postgres:17-alpine
+    container_name: vb-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - vb_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - vb_db
+
+volumes:
+  vb_db_data:
 
 networks:
   npm_network:
     external: true
     name: mi-red-nginx
+  # Frontend <-> API. Tiene salida a internet para Turnstile y Telegram.
+  vb_app:
+  # API <-> base de datos. Sin salida a internet y sin puertos publicados.
+  vb_db:
+    internal: true

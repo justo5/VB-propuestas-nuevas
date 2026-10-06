@@ -14,6 +14,11 @@
       <div class="apply__step-count">Paso {{ currentStep() + 1 }} de {{ steps.length }}</div>
 
       <form [formGroup]="form" (ngSubmit)="next()" class="apply__form" novalidate>
+        <label class="apply__hp" aria-hidden="true">
+          No completes este campo
+          <input type="text" formControlName="website" tabindex="-1" autocomplete="off" />
+        </label>
+
         @switch (currentStep()) {
           @case (0) {
             <h3 class="apply__question">¿Qué plan te interesa?</h3>
@@ -106,7 +111,23 @@
             @if (isInvalid('inversion')) {
               <span class="apply__error">Elegí una opción</span>
             }
+
+            <label class="apply__consent">
+              <input type="checkbox" formControlName="consentimiento" />
+              <span>
+                Acepto que Vamos Bien guarde estos datos para contactarme sobre mi consulta.
+              </span>
+            </label>
+            @if (isInvalid('consentimiento')) {
+              <span class="apply__error">Necesitamos tu autorización para contactarte</span>
+            }
+
+            <div #turnstile class="apply__turnstile"></div>
           }
+        }
+
+        @if (submitError()) {
+          <p class="apply__submit-error" role="alert">{{ submitError() }}</p>
         }
 
         <div class="apply__nav">
@@ -115,8 +136,12 @@
           } @else {
             <span></span>
           }
-          <button type="submit" class="btn btn--accent">
-            {{ currentStep() === steps.length - 1 ? 'Enviar' : 'Continuar →' }}
+          <button type="submit" class="btn btn--accent" [disabled]="sending()">
+            @if (currentStep() === steps.length - 1) {
+              {{ sending() ? 'Enviando…' : 'Enviar' }}
+            } @else {
+              Continuar →
+            }
           </button>
         </div>
       </form>
@@ -125,8 +150,8 @@
         <div class="apply__done-icon">✓</div>
         <h3>¡Listo, {{ form.value.nombre }}!</h3>
         <p>
-          Te abrimos WhatsApp para que nos mandes tu consulta. Si no se abrió automáticamente, tocá
-          el botón:
+          Recibimos tus datos y te vamos a contactar por WhatsApp. Si querés adelantarte, escribinos
+          ahora:
         </p>
         <a [href]="whatsappLink()" target="_blank" rel="noopener" class="btn btn--accent"
           >Abrir WhatsApp →</a
