@@ -70,13 +70,26 @@
                   <span class="apply__error">Contanos dónde encontrarte</span>
                 }
               </label>
-              <label class="apply__field">
-                <span>WhatsApp</span>
-                <input type="tel" formControlName="whatsapp" placeholder="+598 99 999 999" />
+              <div class="apply__field">
+                <label for="apply-whatsapp">WhatsApp</label>
+                <div class="apply__phone">
+                  <select formControlName="paisTelefono" aria-label="Código de país">
+                    @for (country of countryCodes; track country.code) {
+                      <option [value]="country.code">{{ country.flag }} {{ country.dial }}</option>
+                    }
+                  </select>
+                  <input
+                    id="apply-whatsapp"
+                    type="tel"
+                    formControlName="whatsapp"
+                    placeholder="99 123 456"
+                    autocomplete="tel-national"
+                  />
+                </div>
                 @if (isInvalid('whatsapp')) {
                   <span class="apply__error">Ingresá tu número de WhatsApp</span>
                 }
-              </label>
+              </div>
             </div>
           }
           @case (3) {

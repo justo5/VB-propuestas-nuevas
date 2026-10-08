@@ -19,6 +19,12 @@ interface InversionOption {
   label: string;
 }
 
+interface CountryCode {
+  code: string;
+  flag: string;
+  dial: string;
+}
+
 interface FormStep {
   fields: string[];
 }
@@ -56,17 +62,36 @@ export class ApplicationForm {
   protected readonly steps: FormStep[] = [
     { fields: ['plan'] },
     { fields: ['nombre', 'apellido'] },
-    { fields: ['contacto', 'whatsapp'] },
+    { fields: ['contacto', 'paisTelefono', 'whatsapp'] },
     { fields: ['rubro'] },
     { fields: ['inversion', 'consentimiento'] },
   ];
 
   protected readonly inversionOptions: InversionOption[] = [
-    { value: 'cero', label: 'USD 0, no invierto en anuncios' },
+    { value: 'cero', label: 'Nada' },
     { value: 'menos-300', label: 'Menos de USD 300' },
     { value: '300-700', label: 'De USD 300 a USD 700' },
     { value: '700-1500', label: 'De USD 700 a USD 1.500' },
     { value: 'mas-1500', label: 'Más de USD 1.500' },
+  ];
+
+  protected readonly countryCodes: CountryCode[] = [
+    { code: 'UY', flag: '🇺🇾', dial: '+598' },
+    { code: 'AR', flag: '🇦🇷', dial: '+54' },
+    { code: 'BO', flag: '🇧🇴', dial: '+591' },
+    { code: 'BR', flag: '🇧🇷', dial: '+55' },
+    { code: 'CL', flag: '🇨🇱', dial: '+56' },
+    { code: 'CO', flag: '🇨🇴', dial: '+57' },
+    { code: 'CR', flag: '🇨🇷', dial: '+506' },
+    { code: 'EC', flag: '🇪🇨', dial: '+593' },
+    { code: 'ES', flag: '🇪🇸', dial: '+34' },
+    { code: 'US', flag: '🇺🇸', dial: '+1' },
+    { code: 'GT', flag: '🇬🇹', dial: '+502' },
+    { code: 'MX', flag: '🇲🇽', dial: '+52' },
+    { code: 'PA', flag: '🇵🇦', dial: '+507' },
+    { code: 'PY', flag: '🇵🇾', dial: '+595' },
+    { code: 'PE', flag: '🇵🇪', dial: '+51' },
+    { code: 'VE', flag: '🇻🇪', dial: '+58' },
   ];
 
   protected readonly form = this.fb.nonNullable.group({
@@ -74,7 +99,8 @@ export class ApplicationForm {
     nombre: ['', [Validators.required, Validators.maxLength(80)]],
     apellido: ['', [Validators.required, Validators.maxLength(80)]],
     contacto: ['', [Validators.required, Validators.maxLength(200)]],
-    whatsapp: ['', [Validators.required, Validators.pattern(/^\+?[\d\s()-]{6,30}$/)]],
+    paisTelefono: ['UY', Validators.required],
+    whatsapp: ['', [Validators.required, Validators.pattern(/^\+?[\d\s()-]{6,24}$/)]],
     rubro: ['', [Validators.required, Validators.maxLength(120)]],
     inversion: ['', Validators.required],
     consentimiento: [false, Validators.requiredTrue],
@@ -190,12 +216,14 @@ export class ApplicationForm {
 
     this.sending.set(true);
     this.submitError.set(null);
-    const value = this.form.getRawValue();
+    const { paisTelefono, ...value } = this.form.getRawValue();
+    const dial = this.countryCodes.find((country) => country.code === paisTelefono)?.dial ?? '';
 
     try {
       await firstValueFrom(
         this.http.post('/api/aplicaciones', {
           ...value,
+          whatsapp: fullPhone(dial, value.whatsapp),
           turnstileToken: this.turnstileToken() ?? undefined,
         }),
       );
@@ -212,6 +240,16 @@ export class ApplicationForm {
 
     this.submitted.set(true);
   }
+}
+
+// Antepone el código de país, salvo que el número ya venga en formato internacional.
+// Quita el 0 inicial del formato local (ej: 099 123 456 → +598 99 123 456).
+function fullPhone(dial: string, number: string): string {
+  const trimmed = number.trim();
+  if (trimmed.startsWith('+')) {
+    return trimmed;
+  }
+  return `${dial} ${trimmed.replace(/^0+/, '')}`;
 }
 
 function errorMessage(error: unknown): string {

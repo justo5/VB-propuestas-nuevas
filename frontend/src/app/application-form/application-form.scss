@@ -97,6 +97,21 @@
   }
 }
 
+.apply__phone {
+  display: flex;
+  gap: 8px;
+
+  select {
+    flex: 0 0 auto;
+    cursor: pointer;
+  }
+
+  input {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
 .apply__error {
   color: var(--color-accent-red);
   font-size: 13px;
