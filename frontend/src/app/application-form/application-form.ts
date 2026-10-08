@@ -38,6 +38,7 @@ interface Turnstile {
 declare global {
   interface Window {
     turnstile?: Turnstile;
+    fbq?: (...args: unknown[]) => void;
   }
 }
 
@@ -238,6 +239,7 @@ export class ApplicationForm {
       this.sending.set(false);
     }
 
+    window.fbq?.('track', 'CompleteRegistration');
     this.submitted.set(true);
   }
 }
