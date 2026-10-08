@@ -62,6 +62,7 @@ export class ApplicationForm {
   ];
 
   protected readonly inversionOptions: InversionOption[] = [
+    { value: 'cero', label: 'USD 0, no invierto en anuncios' },
     { value: 'menos-300', label: 'Menos de USD 300' },
     { value: '300-700', label: 'De USD 300 a USD 700' },
     { value: '700-1500', label: 'De USD 700 a USD 1.500' },

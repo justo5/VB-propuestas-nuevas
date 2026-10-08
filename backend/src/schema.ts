@@ -7,7 +7,7 @@ const text = (max: number) =>
     .transform((value) => value.replace(/[\u0000-\u001f\u007f]/g, '').trim())
     .pipe(z.string().min(1).max(max));
 
-export const INVERSION_VALUES = ['menos-300', '300-700', '700-1500', 'mas-1500'] as const;
+export const INVERSION_VALUES = ['cero', 'menos-300', '300-700', '700-1500', 'mas-1500'] as const;
 
 export const aplicacionSchema = z.object({
   plan: text(120),

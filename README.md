@@ -68,7 +68,7 @@ Cuerpo del envío:
 }
 ```
 
-`inversion` es uno de `menos-300`, `300-700`, `700-1500` o `mas-1500`.
+`inversion` es uno de `cero`, `menos-300`, `300-700`, `700-1500` o `mas-1500`.
 
 Headers:
 

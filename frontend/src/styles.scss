@@ -25,6 +25,12 @@ html {
   overflow-x: hidden;
 }
 
+// Los círculos .decor sobresalen de sus secciones; se recortan acá porque iOS
+// ignora overflow-x en html/body. `clip` no rompe el header sticky.
+.page {
+  overflow-x: clip;
+}
+
 body {
   margin: 0;
   background: var(--color-bg);

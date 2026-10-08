@@ -3,7 +3,6 @@
   <span class="decor decor--lime hero__decor-2"></span>
   <div class="hero__inner">
     <div class="hero__copy">
-      <span class="badge"><span class="badge__dot"></span>Video gratuito · 7 minutos</span>
       <h1 class="hero__title">
         Conseguí más clientes <span class="text-primary">sin invertir a ciegas</span> en
         publicidad
@@ -14,16 +13,90 @@
       </p>
       <app-google-badge [inline]="true" />
       <div class="hero__actions">
-        <a href="#video" class="btn btn--accent">▶ Ver el video</a>
+        <a href="#casos" class="btn btn--accent">▶ Ver casos de éxito</a>
         <a href="#escalones" class="btn btn--outline">Qué opción me conviene</a>
       </div>
     </div>
-    <div id="video" class="video-card">
-      <div class="video-card__shadow"></div>
-      <div class="video-card__frame">
-        <div class="video-card__pattern"></div>
-        <div class="video-card__play"><span class="video-card__play-icon"></span></div>
-        <div class="video-card__label">video embebido · 7 min</div>
+
+    <div id="casos" class="casos" aria-roledescription="carrusel" aria-label="Casos de éxito">
+      <div class="casos__carousel">
+        <button type="button" class="casos__arrow" (click)="prevCaso()" aria-label="Caso anterior">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20" aria-hidden="true">
+            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+          </svg>
+        </button>
+
+        <div
+          #viewport
+          class="casos__viewport"
+          (touchstart)="onTouchStart($event)"
+          (touchend)="onTouchEnd($event)"
+        >
+          <div class="casos__track" [style.transform]="'translateX(' + trackOffset() + 'px)'">
+            @for (caso of casos; track caso.src; let i = $index) {
+              <div
+                #card
+                class="casos__card"
+                [class.casos__card--active]="i === activeCaso()"
+                (click)="toggleCasoAudio(i, $event)"
+              >
+                <video
+                  #casoVideo
+                  class="casos__video"
+                  [poster]="caso.poster"
+                  muted
+                  loop
+                  playsinline
+                  preload="none"
+                  disablepictureinpicture
+                >
+                  <source [src]="caso.src" type="video/mp4" />
+                </video>
+
+                @if (i === activeCaso()) {
+                  @if (playingCaso() === i) {
+                    <span class="casos__sound" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                        <path
+                          d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05A4.5 4.5 0 0 0 16.5 12zM14 3.23v2.06A7 7 0 0 1 14 18.7v2.06A9 9 0 0 0 14 3.23z"
+                        />
+                      </svg>
+                    </span>
+                  } @else {
+                    <button
+                      type="button"
+                      class="casos__play"
+                      (click)="toggleCasoAudio(i, $event)"
+                      aria-label="Ver con sonido"
+                    >
+                      <span class="casos__play-icon"></span>
+                    </button>
+                    <span class="casos__hint">Tocá para escuchar</span>
+                  }
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+        <button type="button" class="casos__arrow" (click)="nextCaso()" aria-label="Caso siguiente">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20" aria-hidden="true">
+            <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="casos__dots">
+        @for (caso of casos; track caso.src; let i = $index) {
+          <button
+            type="button"
+            class="casos__dot"
+            [class.casos__dot--active]="i === activeCaso()"
+            (click)="goToCaso(i)"
+            [attr.aria-label]="'Ver caso ' + (i + 1)"
+            [attr.aria-current]="i === activeCaso()"
+          ></button>
+        }
       </div>
     </div>
   </div>

@@ -40,7 +40,7 @@
 
 .tier-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(310px, 100%), 1fr));
   gap: 22px;
   align-items: stretch;
 }
