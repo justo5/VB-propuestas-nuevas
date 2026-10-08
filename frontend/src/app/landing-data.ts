@@ -109,10 +109,6 @@ export const NO_LIST: string[] = [
 export const GOOGLE_RATING = 4.9;
 export const GOOGLE_REVIEW_COUNT = 136;
 
-// Número de WhatsApp Business al que se redirige tras completar el formulario de aplicación.
-// Formato E.164 sin "+" ni espacios (ej: 59899123456). TODO: reemplazar por el número real.
-export const WHATSAPP_NUMBER = '59800000000';
-
 export const TESTIMONIALS_ROW_A: Testimonial[] = [
   {
     initials: 'SE',

@@ -11,7 +11,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 
-import { TIERS, WHATSAPP_NUMBER } from '../landing-data';
+import { TIERS } from '../landing-data';
 import { PlanSelection } from '../plan-selection';
 
 interface InversionOption {
@@ -86,7 +86,6 @@ export class ApplicationForm {
   protected readonly submitted = signal(false);
   protected readonly sending = signal(false);
   protected readonly submitError = signal<string | null>(null);
-  protected readonly whatsappLink = signal<string | null>(null);
 
   private readonly turnstileSiteKey = signal<string | null>(null);
   private readonly turnstileToken = signal<string | null>(null);
@@ -211,21 +210,6 @@ export class ApplicationForm {
       this.sending.set(false);
     }
 
-    const inversionLabel =
-      this.inversionOptions.find((option) => option.value === value.inversion)?.label ??
-      value.inversion;
-
-    const message = [
-      'Hola! Quiero aplicar para trabajar con Vamos Bien.',
-      `Plan: ${value.plan}`,
-      `Nombre: ${value.nombre} ${value.apellido}`,
-      `Sitio/Instagram: ${value.contacto}`,
-      `WhatsApp: ${value.whatsapp}`,
-      `Rubro: ${value.rubro}`,
-      `Inversión actual en anuncios: ${inversionLabel}`,
-    ].join('\n');
-
-    this.whatsappLink.set(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`);
     this.submitted.set(true);
   }
 }
