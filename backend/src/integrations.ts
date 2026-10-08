@@ -26,7 +26,7 @@ export async function notifyTelegram(id: number, data: Aplicacion): Promise<void
     return;
   }
 
-  const text = [
+  const lines = [
     `<b>Nueva aplicación #${id}</b>`,
     `Plan: ${escapeHtml(data.plan)}`,
     `Nombre: ${escapeHtml(data.nombre)} ${escapeHtml(data.apellido)}`,
@@ -34,7 +34,21 @@ export async function notifyTelegram(id: number, data: Aplicacion): Promise<void
     `WhatsApp: ${escapeHtml(data.whatsapp)}`,
     `Rubro: ${escapeHtml(data.rubro)}`,
     `Inversión: ${escapeHtml(data.inversion)}`,
-  ].join('\n');
+  ];
+  const utm = data.utm;
+  if (utm?.source || utm?.medium) {
+    lines.push(`Origen: ${escapeHtml([utm.source, utm.medium].filter(Boolean).join(' / '))}`);
+  }
+  if (utm?.campaign) {
+    lines.push(`Campaña: ${escapeHtml(utm.campaign)}`);
+  }
+  if (utm?.term) {
+    lines.push(`Conjunto: ${escapeHtml(utm.term)}`);
+  }
+  if (utm?.content) {
+    lines.push(`Anuncio: ${escapeHtml(utm.content)}`);
+  }
+  const text = lines.join('\n');
 
   const response = await fetch(
     `https://api.telegram.org/bot${config.telegramBotToken}/sendMessage`,

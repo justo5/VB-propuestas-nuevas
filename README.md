@@ -21,7 +21,29 @@ puertos, y la base está en una red interna sin salida a internet.
 
 ```bash
 docker compose exec vb-db psql -U vb -d vb \
-  -c "SELECT id, created_at, plan, nombre, apellido, whatsapp, contacto, rubro, inversion FROM aplicaciones ORDER BY id DESC"
+  -c "SELECT id, created_at, plan, nombre, apellido, whatsapp, contacto, rubro, inversion, utm_campaign, utm_content FROM aplicaciones ORDER BY id DESC"
+```
+
+### Saber de qué anuncio vino cada aplicación
+
+El formulario guarda los parámetros `utm_source`, `utm_medium`, `utm_campaign`, `utm_term` y
+`utm_content` de la URL con la que la persona llegó a la landing. Se ven en la base, en el aviso por
+Telegram y en el webhook.
+
+En Meta Ads, en cada anuncio → **Seguimiento → Parámetros de URL**, pegá:
+
+```
+utm_source=facebook&utm_medium=paid&utm_campaign={{campaign.name}}&utm_term={{adset.name}}&utm_content={{ad.name}}
+```
+
+Meta reemplaza las variables por los nombres reales: `utm_campaign` es la campaña, `utm_term` el
+conjunto de anuncios y `utm_content` el anuncio.
+
+Aplicaciones por anuncio:
+
+```bash
+docker compose exec vb-db psql -U vb -d vb \
+  -c "SELECT utm_campaign, utm_content, count(*) FROM aplicaciones GROUP BY 1, 2 ORDER BY 3 DESC"
 ```
 
 Exportar a CSV:
@@ -64,11 +86,19 @@ Cuerpo del envío:
   "whatsapp": "+598 99 123 456",
   "rubro": "estética",
   "inversion": "300-700",
-  "consentimientoAt": "2026-10-06T18:49:07.982Z"
+  "consentimientoAt": "2026-10-06T18:49:07.982Z",
+  "utm": {
+    "source": "facebook",
+    "medium": "paid",
+    "campaign": "Captación octubre",
+    "content": "Video testimonio",
+    "term": "Dueños de negocio UY"
+  }
 }
 ```
 
-`inversion` es uno de `cero`, `menos-300`, `300-700`, `700-1500` o `mas-1500`.
+`inversion` es uno de `cero`, `menos-300`, `300-700`, `700-1500` o `mas-1500`. Los campos de
+`utm` son `null` cuando la URL de llegada no los traía.
 
 Headers:
 

@@ -225,6 +225,7 @@ export class ApplicationForm {
         this.http.post('/api/aplicaciones', {
           ...value,
           whatsapp: fullPhone(dial, value.whatsapp),
+          utm: currentUtm(),
           turnstileToken: this.turnstileToken() ?? undefined,
         }),
       );
@@ -252,6 +253,21 @@ function fullPhone(dial: string, number: string): string {
     return trimmed;
   }
   return `${dial} ${trimmed.replace(/^0+/, '')}`;
+}
+
+const UTM_KEYS = ['source', 'medium', 'campaign', 'content', 'term'] as const;
+
+// Parámetros utm_* de la URL de llegada (la landing navega solo por anclas, así que siguen ahí).
+function currentUtm(): Partial<Record<(typeof UTM_KEYS)[number], string>> | undefined {
+  const params = new URLSearchParams(window.location.search);
+  const utm: Partial<Record<(typeof UTM_KEYS)[number], string>> = {};
+  for (const key of UTM_KEYS) {
+    const value = params.get(`utm_${key}`)?.trim().slice(0, 200);
+    if (value) {
+      utm[key] = value;
+    }
+  }
+  return Object.keys(utm).length ? utm : undefined;
 }
 
 function errorMessage(error: unknown): string {

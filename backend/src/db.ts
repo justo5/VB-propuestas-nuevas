@@ -34,6 +34,15 @@ export async function migrate(): Promise<void> {
       ADD COLUMN IF NOT EXISTS webhook_proximo_at TIMESTAMPTZ NOT NULL DEFAULT now(),
       ADD COLUMN IF NOT EXISTS webhook_error      TEXT
   `);
+  // De qué campaña / anuncio llegó (parámetros utm_* de la URL).
+  await pool.query(`
+    ALTER TABLE aplicaciones
+      ADD COLUMN IF NOT EXISTS utm_source   TEXT,
+      ADD COLUMN IF NOT EXISTS utm_medium   TEXT,
+      ADD COLUMN IF NOT EXISTS utm_campaign TEXT,
+      ADD COLUMN IF NOT EXISTS utm_content  TEXT,
+      ADD COLUMN IF NOT EXISTS utm_term     TEXT
+  `);
   await pool.query(`
     CREATE INDEX IF NOT EXISTS aplicaciones_webhook_pendientes
       ON aplicaciones (webhook_proximo_at) WHERE webhook_enviado_at IS NULL
@@ -47,8 +56,9 @@ export async function insertAplicacion(
   // Consulta parametrizada: los valores nunca se concatenan al SQL.
   const result = await pool.query<{ id: string }>(
     `INSERT INTO aplicaciones
-       (plan, nombre, apellido, contacto, whatsapp, rubro, inversion, consentimiento_at, ip, user_agent)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, now(), $8, $9)
+       (plan, nombre, apellido, contacto, whatsapp, rubro, inversion, consentimiento_at, ip, user_agent,
+        utm_source, utm_medium, utm_campaign, utm_content, utm_term)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, now(), $8, $9, $10, $11, $12, $13, $14)
      RETURNING id`,
     [
       data.plan,
@@ -60,6 +70,11 @@ export async function insertAplicacion(
       data.inversion,
       meta.ip,
       meta.userAgent?.slice(0, 300) ?? null,
+      data.utm?.source ?? null,
+      data.utm?.medium ?? null,
+      data.utm?.campaign ?? null,
+      data.utm?.content ?? null,
+      data.utm?.term ?? null,
     ],
   );
   return Number(result.rows[0].id);

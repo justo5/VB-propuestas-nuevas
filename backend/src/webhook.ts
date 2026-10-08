@@ -18,6 +18,11 @@ interface PendingRow {
   rubro: string;
   inversion: string;
   consentimiento_at: Date;
+  utm_source: string | null;
+  utm_medium: string | null;
+  utm_campaign: string | null;
+  utm_content: string | null;
+  utm_term: string | null;
   webhook_intentos: number;
 }
 
@@ -72,7 +77,8 @@ async function processPending(): Promise<void> {
        FOR UPDATE SKIP LOCKED
      )
      RETURNING id, created_at, plan, nombre, apellido, contacto, whatsapp, rubro, inversion,
-               consentimiento_at, webhook_intentos`,
+               consentimiento_at, utm_source, utm_medium, utm_campaign, utm_content, utm_term,
+               webhook_intentos`,
     [MAX_ATTEMPTS, BATCH_SIZE],
   );
 
@@ -127,6 +133,13 @@ async function send(row: PendingRow): Promise<void> {
     rubro: row.rubro,
     inversion: row.inversion,
     consentimientoAt: row.consentimiento_at.toISOString(),
+    utm: {
+      source: row.utm_source,
+      medium: row.utm_medium,
+      campaign: row.utm_campaign,
+      content: row.utm_content,
+      term: row.utm_term,
+    },
   });
   const timestamp = Math.floor(Date.now() / 1000).toString();
   const signature = createHmac('sha256', config.webhookSecret!)
