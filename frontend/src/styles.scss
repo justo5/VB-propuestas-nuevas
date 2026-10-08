@@ -22,6 +22,8 @@
 
 html {
   scroll-behavior: smooth;
+  // Que los anclas del nav no queden tapados por el header sticky.
+  scroll-padding-top: 80px;
   overflow-x: hidden;
 }
 

@@ -1,11 +1,13 @@
+// El sticky va en el host: si va en .header, su contenedor es <app-header>
+// (mide lo mismo que el header) y no tiene recorrido para quedarse pegado.
 :host {
   display: block;
-}
-
-.header {
   position: sticky;
   top: 0;
   z-index: 30;
+}
+
+.header {
   background: rgba(250, 249, 246, 0.78);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
