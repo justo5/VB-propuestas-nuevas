@@ -159,6 +159,8 @@ async function send(row: PendingRow): Promise<void> {
     signal: AbortSignal.timeout(10_000),
   });
   if (!response.ok) {
-    throw new Error(`El sistema externo respondió ${response.status}`);
+    // Guardamos el principio de la respuesta para saber por qué la rechazó.
+    const detail = (await response.text().catch(() => '')).slice(0, 300);
+    throw new Error(`El sistema externo respondió ${response.status}${detail ? `: ${detail}` : ''}`);
   }
 }
